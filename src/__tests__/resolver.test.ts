@@ -39,7 +39,7 @@ describe('psqr did resolver', () => {
     } as Response)
     const result = await didResolver.resolve(did)
     expect(result.didDocument).toEqual(validResponse)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
+    expect(result.didResolutionMetadata.httpsUrl).toEqual('https://id.ology.com/joe-test')
   })
 
   it('resolves document with trailing slash', async () => {
@@ -49,7 +49,7 @@ describe('psqr did resolver', () => {
     } as Response)
     const result = await didResolver.resolve(did + '/')
     expect(result.didDocument).toEqual(validResponse)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
+    expect(result.didResolutionMetadata.httpsUrl).toEqual('https://id.ology.com/joe-test')
   })
 
   it('resolves document with key fragment', async () => {
@@ -59,7 +59,7 @@ describe('psqr did resolver', () => {
     } as Response)
     const result = await didResolver.resolve(kid)
     expect(result.didDocument).toEqual(validResponse)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
+    expect(result.didResolutionMetadata.httpsUrl).toEqual('https://id.ology.com/joe-test')
   })
 
   it('resolves document with root did', async () => {
@@ -70,7 +70,7 @@ describe('psqr did resolver', () => {
     } as Response)
     const result = await didResolver.resolve(didRoot)
     expect(result.didDocument).toEqual(validResponseRoot)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/.well-known/psqr')
+    expect(result.didResolutionMetadata.httpsUrl).toEqual('https://id.ology.com/.well-known/psqr')
   })
 
   it('fails if the did is not a valid https url', async () => {

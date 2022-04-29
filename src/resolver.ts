@@ -1,13 +1,13 @@
 import fetch from 'cross-fetch'
-import { DIDDocument, DIDResolutionResult, DIDResolver, parse, ParsedDID } from 'did-resolver'
+import { DIDDocument, DIDResolutionResult, DIDResolver, ParsedDID } from 'did-resolver'
 
 import { Did } from './types/identity'
 
 const DOC_PATH = '/.well-known/psqr'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function get(httpsUrl: string): Promise<any> {
-  const res = await fetch(httpsUrl, {
+async function get(url: string): Promise<any> {
+  const res = await fetch(url, {
     mode: 'cors',
     headers: {
       Accept: 'application/json,application/did+json',
@@ -31,7 +31,7 @@ export function getResolver(): Record<string, DIDResolver> {
     if (typeof parsed.path !== 'undefined') {
       const correctHttpsPath = parsed.path.replace(/\/$/, '')
       did += correctHttpsPath
-      path = parsed.id + correctHttpsPath
+      httpsPath = parsed.id + correctHttpsPath
     }
 
     const httpsUrl = `https://${httpsPath}`
@@ -56,6 +56,7 @@ export function getResolver(): Record<string, DIDResolver> {
       // validate did:psqr structure
       try {
         Did.check(didDocument)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         err = `resolver_error: Invalid DID:PSQR document returned: ${error.details}`
         break

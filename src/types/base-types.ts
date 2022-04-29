@@ -2,8 +2,9 @@ import { String } from 'runtypes'
 
 const Url = String.withConstraint((str) => {
   try {
-    const _url = new URL(str)
+    new URL(str)
     return true
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return error.message
   }
