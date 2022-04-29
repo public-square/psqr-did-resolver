@@ -24,15 +24,14 @@ async function get(url: string): Promise<any> {
 export function getResolver(): Record<string, DIDResolver> {
   async function resolve(did: string, parsed: ParsedDID): Promise<DIDResolutionResult> {
     let err = null
-    // remove any url fragments
-    let path = decodeURIComponent(parsed.id)
-      .replace(/(#\w)+/g, '')
-      .replace(/\/?$/, DOC_PATH)
+    // start with root did path
+    let path = parsed.id + DOC_PATH
 
-    // if url path is not present, append path for root did
+    // if url path is present, use it instead of the well known root path
     if (typeof parsed.path !== 'undefined') {
-      did += parsed.path
-      path = parsed.id + parsed.path
+      const correctPath = parsed.path.replace(/\/$/, '');
+      did += correctPath
+      path = parsed.id + correctPath
     }
 
     const url = `https://${path}`

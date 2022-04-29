@@ -9,6 +9,7 @@ describe('psqr did resolver', () => {
   const did: string = 'did:psqr:id.ology.com/joe-test'
   const didRoot: string = 'did:psqr:id.ology.com'
   const kid: string = 'did:psqr:id.ology.com/joe-test#publish'
+  const validContentType = 'application/json'
   const validResponse: DIDDocument = didDocument
   const invalidDidDocument = {
     "@context": [
@@ -32,14 +33,33 @@ describe('psqr did resolver', () => {
   })
 
   it('resolves document', async () => {
-    expect.assertions(3)
+    expect.assertions(2)
     mockedFetch.mockResolvedValueOnce({
       json: () => Promise.resolve(validResponse),
     } as Response)
     const result = await didResolver.resolve(did)
     expect(result.didDocument).toEqual(validResponse)
     expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
-    expect(result.didResolutionMetadata.contentType).toEqual('application/json,application/did+json')
+  })
+
+  it('resolves document with trailing slash', async () => {
+    expect.assertions(2)
+    mockedFetch.mockResolvedValueOnce({
+      json: () => Promise.resolve(validResponse),
+    } as Response)
+    const result = await didResolver.resolve(did + '/')
+    expect(result.didDocument).toEqual(validResponse)
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
+  })
+
+  it('resolves document with key fragment', async () => {
+    expect.assertions(2)
+    mockedFetch.mockResolvedValueOnce({
+      json: () => Promise.resolve(validResponse),
+    } as Response)
+    const result = await didResolver.resolve(kid)
+    expect(result.didDocument).toEqual(validResponse)
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
   })
 
   it('resolves document with root did', async () => {
@@ -49,19 +69,8 @@ describe('psqr did resolver', () => {
       json: () => Promise.resolve(validResponseRoot),
     } as Response)
     const result = await didResolver.resolve(didRoot)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/.well-known/psqr')
     expect(result.didDocument).toEqual(validResponseRoot)
-  })
-
-  it('resolves document with key fragment', async () => {
-    expect.assertions(3)
-    mockedFetch.mockResolvedValueOnce({
-      json: () => Promise.resolve(validResponse),
-    } as Response)
-    const result = await didResolver.resolve(kid)
-    expect(result.didDocument).toEqual(validResponse)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
-    expect(result.didResolutionMetadata.contentType).toEqual('application/json,application/did+json')
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/.well-known/psqr')
   })
 
   it('fails if the did is not a valid https url', async () => {
