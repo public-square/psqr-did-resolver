@@ -6,8 +6,8 @@ import { Did } from './types/identity'
 const DOC_PATH = '/.well-known/psqr'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function get(url: string): Promise<any> {
-  const res = await fetch(url, {
+async function get(httpsUrl: string): Promise<any> {
+  const res = await fetch(httpsUrl, {
     mode: 'cors',
     headers: {
       Accept: 'application/json,application/did+json',
@@ -24,23 +24,23 @@ async function get(url: string): Promise<any> {
 export function getResolver(): Record<string, DIDResolver> {
   async function resolve(did: string, parsed: ParsedDID): Promise<DIDResolutionResult> {
     let err = null
-    // start with root did path
-    let path = parsed.id + DOC_PATH
+    // start with well known root httpsUrl path
+    let httpsPath = parsed.id + DOC_PATH
 
-    // if url path is present, use it instead of the well known root path
+    // if DID path is present, use it instead of the well known root httpsUrl path
     if (typeof parsed.path !== 'undefined') {
-      const correctPath = parsed.path.replace(/\/$/, '')
-      did += correctPath
-      path = parsed.id + correctPath
+      const correctHttpsPath = parsed.path.replace(/\/$/, '')
+      did += correctHttpsPath
+      path = parsed.id + correctHttpsPath
     }
 
-    const url = `https://${path}`
+    const httpsUrl = `https://${httpsPath}`
     const didDocumentMetadata = {}
     let didDocument: DIDDocument | null = null
 
     do {
       try {
-        didDocument = await get(url)
+        didDocument = await get(httpsUrl)
       } catch (error) {
         err = `resolver_error: DID must resolve to a valid https URL containing a JSON document: ${error}`
         break
@@ -72,14 +72,14 @@ export function getResolver(): Record<string, DIDResolver> {
         didResolutionMetadata: {
           error: 'notFound',
           message: err,
-          url,
+          httpsUrl,
         },
       }
     } else {
       return {
         didDocument,
         didDocumentMetadata,
-        didResolutionMetadata: { contentType, url },
+        didResolutionMetadata: { contentType, httpsUrl },
       }
     }
   }
