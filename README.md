@@ -1,3 +1,6 @@
+[![npm](https://img.shields.io/npm/dt/psqr-did-resolver.svg)](https://www.npmjs.com/package/psqr-did-resolver)
+[![npm](https://img.shields.io/npm/v/psqr-did-resolver.svg)](https://www.npmjs.com/package/psqr-did-resolver)
+
 # PSQR DID Resolver
 
 This library is intended to represent an https URL as a
@@ -12,7 +15,7 @@ It requires the `did-resolver` library, which is the primary interface for resol
 
 To encode a DID for an HTTPS URL, simply replace `https://` with `did:psqr:`.
 
-Exmples:
+Examples:
 
 `https://example.com -> did:psqr:example.com`
 
@@ -23,17 +26,17 @@ Exmples:
 
 The DID resolver is a webserver serving DID Documents via https. Domain root DIDs are
 avaialable at a [well-known URI](https://tools.ietf.org/html/rfc5785), and DIDs associated
-with individuals or items at the same URLs via HTTP content negotiation keying on the 
+with individuals or items at the same URLs via HTTP content negotiation keying on the
 `Accept:` request header.
 
 For a DID `did:psqr:example.com`, the resolver will attempt to access the document at
 `https://example.com/.well-known/psqr`.
 
 For a DID `did:psqr:id.ology.com/joe-test`, the resolver will attempt to access the document at
-`https://id.ology.com/joe-test` with an `Accept:` header requesting `application/json` or 
+`https://id.ology.com/joe-test` with an `Accept:` header requesting `application/json` or
 `application/did+json`.
 
-A minimal DID Document might contain the information below. Additional information outside the 
+A minimal DID Document might contain the information below. Additional information outside the
 `psqr` element is also supported for interoperability with other DID methods:
 
 ```json
