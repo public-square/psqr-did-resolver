@@ -30,10 +30,10 @@ A minimal DID Document might contain the following information:
         "https://www.w3.org/ns/did/v1",
         "https://vpsqr.com/ns/did-psqr/v1"
     ],
-    "id": "did:psqr:id.ology.com",
+    "id": "did:psqr:id.ology.com/joe-test",
     "psqr": {
         "publicIdentity": {
-            "name": "Ology Newswire"
+            "name": "Joe Test"
         },
         "publicKeys": [
             {
@@ -42,7 +42,7 @@ A minimal DID Document might contain the following information:
                 "y": "fmhXHl66obOeGW1hDOtqBrdf1OKFL1jXmSTtZ7d9piPDPrAfwYYRoez7yEBUuG7o",
                 "crv": "P-384",
                 "alg": "ES384",
-                "kid": "did:psqr:id.ology.com#publish"
+                "kid": "did:psqr:id.ology.com/joe-test#publish"
             }
         ],
         "permissions": [
@@ -51,10 +51,10 @@ A minimal DID Document might contain the following information:
                     "publish",
                     "provenance"
                 ],
-                "kid": "did:psqr:id.ology.com#publish"
+                "kid": "did:psqr:id.ology.com/joe-test#publish"
             }
         ],
-        "updated": 1649247941161
+        "updated": 1649247931161
     }
 }
 ```
@@ -74,11 +74,11 @@ const didResolver = new Resolver({
     //...you can flatten multiple resolver methods into the Resolver
 })
 
-didResolver.resolve('did:psqr:uport.me').then(doc => console.log(doc))
+didResolver.resolve('did:psqr:id.ology.com/joe-test').then(doc => console.log(doc))
 
 // You can also use ES7 async/await syntax
 ;(async () => {
-    const doc = await didResolver.resolve('did:psqr:uport.me')
+    const doc = await didResolver.resolve('did:psqr:id.ology.com/joe-test')
     console.log(doc)
 })();
 ```

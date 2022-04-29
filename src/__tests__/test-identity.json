@@ -3,28 +3,57 @@
         "https://www.w3.org/ns/did/v1",
         "https://vpsqr.com/ns/did-psqr/v1"
     ],
-    "id": "did:psqr:id.ology.com",
+    "id": "did:psqr:id.ology.com/joe-test",
     "psqr": {
         "publicIdentity": {
-            "name": "Ology Newswire"
+            "name": "Joe Test"
         },
         "publicKeys": [
+            {
+                "kty": "EC",
+                "x": "eHFhYEUxQOhvwLXN0taVobfL26b8gxtGVAMQqE0xI-iyiZN2dH_g8tza0mGnHb67",
+                "y": "eqagFJ8nLk8O6ccITlwjZb9RL4l5fmwsoKkEuPa41PnelK9qnfQ0WNhkW4pB4E9J",
+                "crv": "P-384",
+                "alg": "ES384",
+                "kid": "did:psqr:id.ology.com/joe-test#admin"
+            },
             {
                 "kty": "EC",
                 "x": "GSswmWMS8j-KXycyyKUZ5MZ4Zf6u-oJ4WJ2BVnTG_ZFBPt1tAdZ_aVNmWAJ-9CeW",
                 "y": "fmhXHl66obOeGW1hDOtqBrdf1OKFL1jXmSTtZ7d9piPDPrAfwYYRoez7yEBUuG7o",
                 "crv": "P-384",
                 "alg": "ES384",
-                "kid": "did:psqr:id.ology.com#publish"
+                "kid": "did:psqr:id.ology.com/joe-test#publish"
+            },
+            {
+                "kty": "EC",
+                "x": "dQMfOYCpbgt-1rzPi3oFdLw-EQRWNI7DRli8jzA15hDcOllJ1gyxgHflNeozCs10",
+                "y": "oTQUEJwYOOSbVAUYqG1OZnFquash6qmUtRN4TOvEwNU7ZkPF4azkzdTSQ6lwoRUj",
+                "crv": "P-384",
+                "alg": "ES384",
+                "kid": "did:psqr:id.ology.com/joe-test#curate"
             }
         ],
         "permissions": [
             {
                 "grant": [
+                    "admin"
+                ],
+                "kid": "did:psqr:id.ology.com/joe-test#admin"
+            },
+            {
+                "grant": [
                     "publish",
                     "provenance"
                 ],
-                "kid": "did:psqr:id.ology.com#publish"
+                "kid": "did:psqr:id.ology.com/joe-test#publish"
+            },
+            {
+                "grant": [
+                    "curate",
+                    "provenance"
+                ],
+                "kid": "did:psqr:id.ology.com/joe-test#curate"
             }
         ],
         "updated": 1649247941161

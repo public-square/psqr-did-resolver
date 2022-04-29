@@ -6,18 +6,18 @@ jest.mock('cross-fetch')
 const mockedFetch = jest.mocked(fetch, true)
 
 describe('psqr did resolver', () => {
-  const did: string = 'did:psqr:id.ology.com'
-  const didLong: string = 'did:psqr:id.ology.com/joe-test'
-  const kid: string = 'did:psqr:id.ology.com#publish'
+  const did: string = 'did:psqr:id.ology.com/joe-test'
+  const didRoot: string = 'did:psqr:id.ology.com'
+  const kid: string = 'did:psqr:id.ology.com/joe-test#publish'
   const validResponse: DIDDocument = didDocument
   const invalidDidDocument = {
     "@context": [
       "https://www.w3.org/ns/did/v1",
       "https://vpsqr.com/ns/did-psqr/v1"
     ],
-    "id": "did:psqr:id.ology.com",
+    "id": "did:psqr:id.ology.com/joe-test",
     "publicIdentity": {
-      "name": "Ology Newswire"
+      "name": "Joe Test"
     }
   }
 
@@ -38,19 +38,19 @@ describe('psqr did resolver', () => {
     } as Response)
     const result = await didResolver.resolve(did)
     expect(result.didDocument).toEqual(validResponse)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/.well-known/psqr')
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
     expect(result.didResolutionMetadata.contentType).toEqual('application/json,application/did+json')
   })
 
-  it('resolves document with long did', async () => {
+  it('resolves document with root did', async () => {
     expect.assertions(2)
-    const validResponseLong: DIDDocument = JSON.parse(JSON.stringify(validResponse).replace(did, didLong))
+    const validResponseRoot: DIDDocument = JSON.parse(JSON.stringify(validResponse).replace(did, didRoot))
     mockedFetch.mockResolvedValueOnce({
-      json: () => Promise.resolve(validResponseLong),
+      json: () => Promise.resolve(validResponseRoot),
     } as Response)
-    const result = await didResolver.resolve(didLong)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
-    expect(result.didDocument).toEqual(validResponseLong)
+    const result = await didResolver.resolve(didRoot)
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/.well-known/psqr')
+    expect(result.didDocument).toEqual(validResponseRoot)
   })
 
   it('resolves document with key fragment', async () => {
@@ -60,7 +60,7 @@ describe('psqr did resolver', () => {
     } as Response)
     const result = await didResolver.resolve(kid)
     expect(result.didDocument).toEqual(validResponse)
-    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/.well-known/psqr')
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
     expect(result.didResolutionMetadata.contentType).toEqual('application/json,application/did+json')
   })
 
