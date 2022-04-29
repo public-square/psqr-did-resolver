@@ -64,7 +64,7 @@ export function getResolver(): Record<string, DIDResolver> {
       // eslint-disable-next-line no-constant-condition
     } while (false)
 
-    const contentType = 'application/json,application/did+json'
+    const contentType = 'application/json'
 
     if (err) {
       return {
