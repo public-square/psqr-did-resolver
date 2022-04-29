@@ -1,7 +1,7 @@
 {
-  "name": "web-did-resolver",
-  "version": "2.0.16",
-  "description": "Resolve DID documents from an https domain",
+  "name": "psqr-did-resolver",
+  "version": "0.1.0",
+  "description": "Resolve DID documents via HTTPS",
   "source": "src/resolver.ts",
   "main": "lib/resolver.js",
   "module": "lib/resolver.module.js",
@@ -11,14 +11,11 @@
     "src",
     "LICENSE"
   ],
-  "author": "Mike Xu",
-  "contributors": [
-    "Mircea Nistor <mircea.nistor@mesh.xyz>"
-  ],
+  "author": "Virtual Public Square (protocol@vpsqr.com)",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git@github.com:decentralized-identity/web-did-resolver.git"
+    "url": "git@github.com/public-square/psqr-did-resolver.git"
   },
   "dependencies": {
     "cross-fetch": "^3.1.2",

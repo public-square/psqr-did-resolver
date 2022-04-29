@@ -29,7 +29,7 @@ export function getResolver(): Record<string, DIDResolver> {
 
     // if url path is present, use it instead of the well known root path
     if (typeof parsed.path !== 'undefined') {
-      const correctPath = parsed.path.replace(/\/$/, '');
+      const correctPath = parsed.path.replace(/\/$/, '')
       did += correctPath
       path = parsed.id + correctPath
     }
