@@ -1,0 +1,32 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/did/v1",
+        "https://vpsqr.com/ns/did-psqr/v1"
+    ],
+    "id": "did:psqr:id.ology.com",
+    "psqr": {
+        "publicIdentity": {
+            "name": "Ology Newswire"
+        },
+        "publicKeys": [
+            {
+                "kty": "EC",
+                "x": "GSswmWMS8j-KXycyyKUZ5MZ4Zf6u-oJ4WJ2BVnTG_ZFBPt1tAdZ_aVNmWAJ-9CeW",
+                "y": "fmhXHl66obOeGW1hDOtqBrdf1OKFL1jXmSTtZ7d9piPDPrAfwYYRoez7yEBUuG7o",
+                "crv": "P-384",
+                "alg": "ES384",
+                "kid": "did:psqr:id.ology.com#publish"
+            }
+        ],
+        "permissions": [
+            {
+                "grant": [
+                    "publish",
+                    "provenance"
+                ],
+                "kid": "did:psqr:id.ology.com#publish"
+            }
+        ],
+        "updated": 1649247941161
+    }
+}

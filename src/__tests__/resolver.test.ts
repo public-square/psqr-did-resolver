@@ -1,27 +1,23 @@
 import { Resolver, DIDDocument, Resolvable } from 'did-resolver'
 import { getResolver } from '../resolver'
 import fetch from 'cross-fetch'
+import didDocument from './test-identity.json';
 jest.mock('cross-fetch')
 const mockedFetch = jest.mocked(fetch, true)
 
-describe('web did resolver', () => {
-  const did: string = 'did:web:example.com'
-  const didLong: string = 'did:web:example.com:user:alice'
-  const didWithPort: string = 'did:web:localhost%3A8443'
-  const didWithEncodedPath: string = 'did:web:example.com:path:some%2Bsubpath'
-  const identity: string = '0x2Cc31912B2b0f3075A87b3640923D45A26cef3Ee'
-  const validResponse: DIDDocument = {
-    '@context': 'https://www.w3.org/ns/did/v1',
-    id: did,
-    publicKey: [
-      {
-        id: `${did}#owner`,
-        type: 'EcdsaSecp256k1RecoveryMethod2020',
-        controller: did,
-        ethereumAddress: identity,
-      },
+describe('psqr did resolver', () => {
+  const did: string = 'did:psqr:id.ology.com'
+  const didLong: string = 'did:psqr:id.ology.com/joe-test'
+  const validResponse: DIDDocument = didDocument
+  const invalidDidDocument = {
+    "@context": [
+      "https://www.w3.org/ns/did/v1",
+      "https://vpsqr.com/ns/did-psqr/v1"
     ],
-    authentication: [`${did}#owner`],
+    "id": "did:psqr:id.ology.com",
+    "publicIdentity": {
+      "name": "Ology Newswire"
+    }
   }
 
   let didResolver: Resolvable
@@ -41,7 +37,7 @@ describe('web did resolver', () => {
     } as Response)
     const result = await didResolver.resolve(did)
     expect(result.didDocument).toEqual(validResponse)
-    expect(result.didResolutionMetadata.contentType).toEqual('application/did+ld+json')
+    expect(result.didResolutionMetadata.contentType).toEqual('application/json,application/did+json')
   })
 
   it('resolves document with long did', async () => {
@@ -87,7 +83,7 @@ describe('web did resolver', () => {
     expect.assertions(2)
     const wrongIdResponse: DIDDocument = {
       ...validResponse,
-      id: 'did:web:wrong.com',
+      id: 'did:psqr:wrong.com',
     }
     mockedFetch.mockResolvedValueOnce({
       json: () => Promise.resolve(wrongIdResponse),
@@ -97,44 +93,16 @@ describe('web did resolver', () => {
     expect(result.didResolutionMetadata.message).toMatch(/DID document id does not match requested did/)
   })
 
-  it('returns correct contentType without @context', async () => {
-    expect.assertions(1)
-    const noContextResponse: DIDDocument = {
-      ...validResponse,
+  it('fails if didDocument is not structured correctly', async () => {
+    expect.assertions(2)
+    const invalidStructureResponse: DIDDocument = {
+      ...invalidDidDocument,
     }
-    delete noContextResponse['@context']
     mockedFetch.mockResolvedValueOnce({
-      json: () => Promise.resolve(noContextResponse),
+      json: () => Promise.resolve(invalidStructureResponse),
     } as Response)
     const result = await didResolver.resolve(did)
-    expect(result.didResolutionMetadata.contentType).toEqual('application/did+json')
-  })
-
-  it('resolves doc with port did', async () => {
-    expect.assertions(2)
-    const validResponsePort: DIDDocument = JSON.parse(JSON.stringify(validResponse).replace(did, didWithPort))
-    mockedFetch.mockResolvedValueOnce({
-      json: () => Promise.resolve(validResponsePort),
-    } as Response)
-    const result = await didResolver.resolve(didWithPort)
-    expect(result.didDocument).toEqual(validResponsePort)
-    expect(mockedFetch).toHaveBeenCalledWith('https://localhost:8443/.well-known/did.json', {
-      mode: 'cors',
-    })
-  })
-
-  it('resolves doc with URI encoded path components', async () => {
-    expect.assertions(2)
-    const validResponseEncodedPath: DIDDocument = JSON.parse(
-      JSON.stringify(validResponse).replace(did, didWithEncodedPath)
-    )
-    mockedFetch.mockResolvedValueOnce({
-      json: () => Promise.resolve(validResponseEncodedPath),
-    } as Response)
-    const result = await didResolver.resolve(didWithEncodedPath)
-    expect(result.didDocument).toEqual(validResponseEncodedPath)
-    expect(mockedFetch).toHaveBeenCalledWith('https://example.com/path/some+subpath/did.json', {
-      mode: 'cors',
-    })
+    expect(result.didResolutionMetadata.error).toEqual('notFound')
+    expect(result.didResolutionMetadata.message).toMatch(/Invalid DID:PSQR document returned: .+/)
   })
 })

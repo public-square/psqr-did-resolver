@@ -1,15 +1,10 @@
-[![npm](https://img.shields.io/npm/dt/web-did-resolver.svg)](https://www.npmjs.com/package/web-did-resolver)
-[![npm](https://img.shields.io/npm/v/web-did-resolver.svg)](https://www.npmjs.com/package/web-did-resolver)
-[![codecov](https://codecov.io/gh/decentralized-identity/web-did-resolver/branch/develop/graph/badge.svg)](https://codecov.io/gh/decentralized-identity/web-did-resolver)
-
-# Web DID Resolver
+# PSQR DID Resolver
 
 This library is intended to represent domains accessed through https as
 [Decentralized Identifiers](https://w3c.github.io/did-core/#identifier)
 and retrieve an associated [DID Document](https://w3c.github.io/did-core/#did-document-properties)
 
-It supports the proposed [`did:psqr` method spec](https://w3c-ccg.github.io/did-method-web/) from
-the [W3C Credentials Community Group](https://w3c-ccg.github.io).
+It supports the proposed [`did:psqr` method spec](https://vpsqr.com/did-method-psqr/v1/).
 
 It requires the `did-resolver` library, which is the primary interface for resolving DIDs.
 
@@ -25,33 +20,44 @@ The DID resolver takes the domain and forms a [well-known URI](https://tools.iet
 to access the DID Document.
 
 For a did `did:psqr:example.com`, the resolver will attempt to access the document at
-`https://example.com/.well-known/identity.json`
+`https://example.com/.well-known/psqr`
 
 A minimal DID Document might contain the following information:
 
 ```json
 {
-  "@context": "https://w3id.org/did/v1",
-  "id": "did:psqr:example.com",
-  "publicKey": [
-    {
-      "id": "did:psqr:example.com#owner",
-      "type": "Secp256k1VerificationKey2018",
-      "controller": "did:psqr:example.com",
-      "publicKeyHex": "04ab0102bcae6c7c3a90b01a3879d9518081bc06123038488db9cb109b082a77d97ea3373e3dfde0eccd9adbdce11d0302ea5c098dbb0b310234c8689501749274"
+    "@context": [
+        "https://www.w3.org/ns/did/v1",
+        "https://vpsqr.com/ns/did-psqr/v1"
+    ],
+    "id": "did:psqr:id.ology.com",
+    "psqr": {
+        "publicIdentity": {
+            "name": "Ology Newswire"
+        },
+        "publicKeys": [
+            {
+                "kty": "EC",
+                "x": "GSswmWMS8j-KXycyyKUZ5MZ4Zf6u-oJ4WJ2BVnTG_ZFBPt1tAdZ_aVNmWAJ-9CeW",
+                "y": "fmhXHl66obOeGW1hDOtqBrdf1OKFL1jXmSTtZ7d9piPDPrAfwYYRoez7yEBUuG7o",
+                "crv": "P-384",
+                "alg": "ES384",
+                "kid": "did:psqr:id.ology.com#publish"
+            }
+        ],
+        "permissions": [
+            {
+                "grant": [
+                    "publish",
+                    "provenance"
+                ],
+                "kid": "did:psqr:id.ology.com#publish"
+            }
+        ],
+        "updated": 1649247941161
     }
-  ],
-  "authentication": [
-    {
-      "type": "Secp256k1SignatureAuthentication2018",
-      "publicKey": "did:psqr:example.com#owner"
-    }
-  ]
 }
 ```
-
-Note: this example uses the `Secp256k1VerificationKey2018` type and an `publicKeyHex` as a publicKey entry, signaling
-that this DID is claiming to control the private key associated with that publicKey.
 
 ## Resolving a DID document
 
@@ -59,12 +65,12 @@ The resolver presents a simple `resolver()` function that returns a ES6 Promise 
 
 ```js
 import { Resolver } from 'did-resolver'
-import { getResolver } from 'web-did-resolver'
+import { getResolver } from 'psqr-did-resolver'
 
-const webResolver = getResolver()
+const psqrResolver = getResolver()
 
 const didResolver = new Resolver({
-    ...webResolver
+    ...psqrResolver
     //...you can flatten multiple resolver methods into the Resolver
 })
 

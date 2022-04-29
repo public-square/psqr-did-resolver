@@ -1,3 +1,31 @@
+## [2.0.16](https://github.com/decentralized-identity/web-did-resolver/compare/2.0.15...2.0.16) (2022-04-28)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies to v18.1.0 ([cd3ed19](https://github.com/decentralized-identity/web-did-resolver/commit/cd3ed195dd49b553128bd3d4a7f24224ceff462f))
+
+## [2.0.15](https://github.com/decentralized-identity/web-did-resolver/compare/2.0.14...2.0.15) (2022-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-scripts to v5.0.1 ([36d0e22](https://github.com/decentralized-identity/web-did-resolver/commit/36d0e22ffd8f207d24a9461227cfac1b736a07d0))
+
+## [2.0.14](https://github.com/decentralized-identity/web-did-resolver/compare/2.0.13...2.0.14) (2022-03-31)
+
+
+### Bug Fixes
+
+* **deps:** update react monorepo to v18 ([8f21c88](https://github.com/decentralized-identity/web-did-resolver/commit/8f21c881263c513d98db14670837f980ab1d4e49))
+
+## [2.0.13](https://github.com/decentralized-identity/web-did-resolver/compare/2.0.12...2.0.13) (2022-03-30)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency did-resolver to v3.2.0 ([d33f51e](https://github.com/decentralized-identity/web-did-resolver/commit/d33f51ef1298d0d5bd784ea593481e40909e7545))
+
 ## [2.0.12](https://github.com/decentralized-identity/web-did-resolver/compare/2.0.11...2.0.12) (2022-01-13)
 
 

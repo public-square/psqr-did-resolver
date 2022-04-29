@@ -1,5 +1,5 @@
+import fetch from 'cross-fetch'
 import { DIDDocument, DIDResolutionResult, DIDResolver, ParsedDID } from 'did-resolver'
-import axios from 'axios'
 
 import { Did } from './types/identity'
 
@@ -7,28 +7,30 @@ const DOC_PATH = '/.well-known/psqr'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function get(url: string): Promise<any> {
-  // set required accept headers
-  const config = {
+  const res = await fetch(url, {
+    mode: 'cors',
     headers: {
-      accept: 'application/json,application/did+json',
+      Accept: 'application/json,application/did+json',
     },
-  }
+    redirect: 'error',
+  })
 
-  // retrieve and validate DID from url
-  const res = await axios.get(url, config)
   if (res.status >= 400) {
     throw new Error(`Bad response ${res.statusText}`)
   }
-  return res.data
+  return res.json()
 }
 
 export function getResolver(): Record<string, DIDResolver> {
   async function resolve(did: string, parsed: ParsedDID): Promise<DIDResolutionResult> {
     let err = null
-    let path = decodeURIComponent(parsed.id) + DOC_PATH
-    const id = parsed.id.split(':')
-    if (id.length > 1) {
-      path = id.map(decodeURIComponent).join('/')
+    // remove any url fragments
+    let path = decodeURIComponent(parsed.id).replace(/[#\w]+/g, '')
+
+    // if url path is not present, append path for root did
+    const reg = /\/\w+/
+    if (reg.test(path) === false) {
+      path = path.replace(/\/?$/, DOC_PATH)
     }
 
     const url = `https://${path}`
@@ -44,24 +46,24 @@ export function getResolver(): Record<string, DIDResolver> {
         break
       }
 
+      // TODO: this excludes the use of query params
       const docIdMatchesDid = didDocument?.id === did
       if (!docIdMatchesDid) {
         err = 'resolver_error: DID document id does not match requested did'
-      }
-
-      // validate did format
-      try {
-        Did.check(didDocument)
-      } catch (error) {
-        err = `resolver_error: DID document is not in a valid format: ${error}`
         break
       }
 
+      // validate did:psqr structure
+      try {
+        Did.check(didDocument)
+      } catch (error: any) {
+        err = `resolver_error: Invalid DID:PSQR document returned: ${error.details}`
+        break
+      }
       // eslint-disable-next-line no-constant-condition
     } while (false)
 
-    const contentType =
-      typeof didDocument?.['@context'] !== 'undefined' ? 'application/did+ld+json' : 'application/did+json'
+    const contentType = 'application/json,application/did+json'
 
     if (err) {
       return {
