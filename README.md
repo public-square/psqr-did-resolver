@@ -1,8 +1,8 @@
 # PSQR DID Resolver
 
-This library is intended to represent domains accessed through https as
-[Decentralized Identifiers](https://w3c.github.io/did-core/#identifier)
-and retrieve an associated [DID Document](https://w3c.github.io/did-core/#did-document-properties)
+This library is intended to represent an https URL as a
+[Decentralized Identifier](https://w3c.github.io/did-core/#identifier) and retrieve an associated
+[DID Document](https://w3c.github.io/did-core/#did-document-properties).
 
 It supports the proposed [`did:psqr` method spec](https://vpsqr.com/did-method-psqr/v1/).
 
@@ -10,19 +10,31 @@ It requires the `did-resolver` library, which is the primary interface for resol
 
 ## DID method
 
-To encode a DID for an HTTPS domain, simply prepend `did:psqr:` to domain name.
+To encode a DID for an HTTPS URL, simply replace `https://` with `did:psqr:`.
 
-eg: `https://example.com -> did:psqr:example.com`
+Exmples:
+
+`https://example.com -> did:psqr:example.com`
+
+`https://example.com/alice -> did:psqr:example.com/alice`
+
 
 ## DID Document
 
-The DID resolver takes the domain and forms a [well-known URI](https://tools.ietf.org/html/rfc5785)
-to access the DID Document.
+The DID resolver is a webserver serving DID Documents via https. Domain root DIDs are
+avaialable at a [well-known URI](https://tools.ietf.org/html/rfc5785), and DIDs associated
+with individuals or items at the same URLs via HTTP content negotiation keying on the 
+`Accept:` request header.
 
-For a did `did:psqr:example.com`, the resolver will attempt to access the document at
-`https://example.com/.well-known/psqr`
+For a DID `did:psqr:example.com`, the resolver will attempt to access the document at
+`https://example.com/.well-known/psqr`.
 
-A minimal DID Document might contain the following information:
+For a DID `did:psqr:id.ology.com/joe-test`, the resolver will attempt to access the document at
+`https://id.ology.com/joe-test` with an `Accept:` header requesting `application/json` or 
+`application/did+json`.
+
+A minimal DID Document might contain the information below. Additional information outside the 
+`psqr` element is also supported for interoperability with other DID methods:
 
 ```json
 {
