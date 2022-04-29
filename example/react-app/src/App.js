@@ -1,12 +1,12 @@
 import './App.css'
 import { useState } from 'react'
 import { Resolver } from 'did-resolver'
-import { getResolver } from 'web-did-resolver'
+import { getResolver } from 'psqr-did-resolver'
 
-const webDidResolver = getResolver()
-const didResolver = new Resolver(webDidResolver)
+const psqrDidResolver = getResolver()
+const didResolver = new Resolver(psqrDidResolver)
 function App() {
-  const [did, setDid] = useState('did:web:identity.foundation')
+  const [did, setDid] = useState('did:psqr:id.ology.com/joe-test')
   const [resolved, setResolved] = useState()
   return (
     <div className="App">

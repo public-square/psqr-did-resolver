@@ -8,6 +8,7 @@ const mockedFetch = jest.mocked(fetch, true)
 describe('psqr did resolver', () => {
   const did: string = 'did:psqr:id.ology.com'
   const didLong: string = 'did:psqr:id.ology.com/joe-test'
+  const kid: string = 'did:psqr:id.ology.com#publish'
   const validResponse: DIDDocument = didDocument
   const invalidDidDocument = {
     "@context": [
@@ -31,23 +32,36 @@ describe('psqr did resolver', () => {
   })
 
   it('resolves document', async () => {
-    expect.assertions(2)
+    expect.assertions(3)
     mockedFetch.mockResolvedValueOnce({
       json: () => Promise.resolve(validResponse),
     } as Response)
     const result = await didResolver.resolve(did)
     expect(result.didDocument).toEqual(validResponse)
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/.well-known/psqr')
     expect(result.didResolutionMetadata.contentType).toEqual('application/json,application/did+json')
   })
 
   it('resolves document with long did', async () => {
-    expect.assertions(1)
+    expect.assertions(2)
     const validResponseLong: DIDDocument = JSON.parse(JSON.stringify(validResponse).replace(did, didLong))
     mockedFetch.mockResolvedValueOnce({
       json: () => Promise.resolve(validResponseLong),
     } as Response)
     const result = await didResolver.resolve(didLong)
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/joe-test')
     expect(result.didDocument).toEqual(validResponseLong)
+  })
+
+  it('resolves document with key fragment', async () => {
+    expect.assertions(3)
+    mockedFetch.mockResolvedValueOnce({
+      json: () => Promise.resolve(validResponse),
+    } as Response)
+    const result = await didResolver.resolve(kid)
+    expect(result.didDocument).toEqual(validResponse)
+    expect(result.didResolutionMetadata.url).toEqual('https://id.ology.com/.well-known/psqr')
+    expect(result.didResolutionMetadata.contentType).toEqual('application/json,application/did+json')
   })
 
   it('fails if the did is not a valid https url', async () => {

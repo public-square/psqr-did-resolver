@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { DIDDocument, DIDResolutionResult, DIDResolver, ParsedDID } from 'did-resolver'
+import { DIDDocument, DIDResolutionResult, DIDResolver, parse, ParsedDID } from 'did-resolver'
 
 import { Did } from './types/identity'
 
@@ -25,16 +25,17 @@ export function getResolver(): Record<string, DIDResolver> {
   async function resolve(did: string, parsed: ParsedDID): Promise<DIDResolutionResult> {
     let err = null
     // remove any url fragments
-    let path = decodeURIComponent(parsed.id).replace(/[#\w]+/g, '')
+    let path = decodeURIComponent(parsed.id)
+      .replace(/(#\w)+/g, '')
+      .replace(/\/?$/, DOC_PATH)
 
     // if url path is not present, append path for root did
-    const reg = /\/\w+/
-    if (reg.test(path) === false) {
-      path = path.replace(/\/?$/, DOC_PATH)
+    if (typeof parsed.path !== 'undefined') {
+      did += parsed.path
+      path = parsed.id + parsed.path
     }
 
     const url = `https://${path}`
-
     const didDocumentMetadata = {}
     let didDocument: DIDDocument | null = null
 
@@ -72,13 +73,14 @@ export function getResolver(): Record<string, DIDResolver> {
         didResolutionMetadata: {
           error: 'notFound',
           message: err,
+          url,
         },
       }
     } else {
       return {
         didDocument,
         didDocumentMetadata,
-        didResolutionMetadata: { contentType },
+        didResolutionMetadata: { contentType, url },
       }
     }
   }
